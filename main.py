@@ -9,7 +9,7 @@ import datetime
 # Flask constructor takes the name of 
 # current module (__name__) as argument.
 app = Flask(__name__)
-app.secret_key = b'_53oi3uriq9pifpfdsfalkf;apl'
+app.secret_key = b'_53oi3uriq9pifpff;apl'
 csrf = CSRFProtect(app) 
 
 bcrypt = Bcrypt(app) 
