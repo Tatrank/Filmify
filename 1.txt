@@ -1,0 +1,7 @@
+	
+	-> pripravit prostredi pro FLASK aplikaci
+	-> ve flask app vyuzivat HTML templates
+	-> aplikace bude obsahovat:
+		1. formu na zapis dat do DB (data a struktura db je na tobe)
+		2. vyčet vsech zapsanych dat v DB
+	-> pouzit CSS k zakladnimu stylovani

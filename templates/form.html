@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <label for="title">Password</label>
+    <input type="text" value="{{request.form['title']}}" name="title" id="title">
+    <label for="description">Description</label>
+    <textarea name="description" id="description" value="{{request.form['description']}}"></textarea>
+    <label for="year">Year</label>
+    <input type="number" value="{{request.form['rel']}}" name="rel" id="rel">
+    <label for="length">Length</label>
+    <input type="number" value="{{request.form['length']}}" name="length" id="length">
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

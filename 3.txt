@@ -1,0 +1,5 @@
+	
+	MIGRACE
+	-> nasazeni applikace na server
+	-> nakonfigurovat aplikaci aby byla pristupna z verejne IP
+	-> aplikace pobezi na portu 8080

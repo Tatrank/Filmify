@@ -1,0 +1,22 @@
+	
+	-> na indexu forma s jednim viditelnym input fieldem (zase nejaky zakladni CSS stylovani)
+	-> input field bude heslo pro pristup do aplikace
+	-> zbytek aplikace nesmi byt přístupny bez zadani spravneho hesla
+	
+	-> heslo musi byt reseno databazove (ulozene v db a sifrovane napr s bcrypt)
+
+	-> hesla budou dvě -> 1. uzivatelské
+			   -> 2. adminské
+
+	-> po zadani pw redirect na stranku s výčtem z DB
+	-> forma na pridani zaznamu do DB bude pristupna pouze pro admina
+	   (tzn. pokud je admin uvidi na stránce výčtu button, který bude smerovat na formu se zapisem do db)
+
+	-> po zadani adminského hesla bude u výčtu dat z databaze tlacitko, které bude umoznovat smazání zaznamu z DB
+	-> zápis do DB z formy řešen AJAXem nebo fetchAPI (preventovat defaultni fuknci formy)
+
+	+++ pokusit se vyuzit CSRF tokeny ve vsech formach
+	+++ zkusit pouzit ikony treti strany napr FontAwesome -> https://fontawesome.com/ -> vytvorit acc -> ADD KIT ->
+		-> vlozeni scriptu FA do aplikace 
+		(kit example: " <script src="https://kit.fontawesome.com/ac0e***REDACTED***23.js" crossorigin="anonymous"></script> ")
+	

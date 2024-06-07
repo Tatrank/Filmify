@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body class="m-0 p-0 ">
+    <div class="m-0 w-full h-auto text-text bg-background">
+        <div class="w-full flex align-middle items-center bg-primary justify-items-center justify-between h-20">
+            <div class="h-fit">Database of films</div>
+            <div class="h-fit">
+                <a href="/">Home</a>
+                <a href="/register">Register</a>
+
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>
