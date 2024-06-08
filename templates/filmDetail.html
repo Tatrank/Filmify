@@ -1,0 +1,222 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div>
+    <img
+      src="/placeholder.svg"
+      alt="Movie Poster"
+      width="600"
+      height="900"
+      class="w-full h-[900px] object-cover rounded-lg"
+      style="aspect-ratio: 600 / 900; object-fit: cover"
+    />
+  </div>
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">{{film.title}}</h1>
+      <p class="text-gray-500 dark:text-gray-400">{{film.release_year}}</p>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Synopsis</h2>
+      <p class="text-gray-500 dark:text-gray-400">{{film.description}}</p>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Cast</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center space-x-4">
+          <span
+            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
+          >
+            <img
+              class="aspect-square h-full w-full"
+              alt="Tim Robbins"
+              src="/placeholder-user.jpg"
+            />
+          </span>
+          <div>
+            <p class="font-medium">Tim Robbins</p>
+            <p class="text-gray-500 dark:text-gray-400">Andy Dufresne</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span
+            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
+          >
+            <img
+              class="aspect-square h-full w-full"
+              alt="Morgan Freeman"
+              src="/placeholder-user.jpg"
+            />
+          </span>
+          <div>
+            <p class="font-medium">Morgan Freeman</p>
+            <p class="text-gray-500 dark:text-gray-400">Red</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span
+            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
+          >
+            <img
+              class="aspect-square h-full w-full"
+              alt="Bob Gunton"
+              src="/placeholder-user.jpg"
+            />
+          </span>
+          <div>
+            <p class="font-medium">Bob Gunton</p>
+            <p class="text-gray-500 dark:text-gray-400">Warden Sa</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span
+            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
+          >
+            <img
+              class="aspect-square h-full w-full"
+              alt="William Sadler"
+              src="/placeholder-user.jpg"
+            />
+          </span>
+          <div>
+            <p class="font-medium">William Sadler</p>
+            <p class="text-gray-500 dark:text-gray-400">Heywood</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Director</h2>
+      <div class="flex items-center space-x-4">
+        <span
+          class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
+        >
+          <img
+            class="aspect-square h-full w-full"
+            alt="Frank Darabont"
+            src="/placeholder-user.jpg"
+          />
+        </span>
+        <div>
+          <p class="font-medium">Frank D</p>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Genres</h2>
+      <div class="flex flex-wrap gap-2">
+        <div
+          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+          data-v0-t="badge"
+        >
+          Drama
+        </div>
+        <div
+          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+          data-v0-t="badge"
+        >
+          Crime
+        </div>
+        <div
+          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+          data-v0-t="badge"
+        >
+          Mystery
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Ratin</h2>
+      <div class="flex items-center space-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-gray-400"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <span class="text-gray-500 dark:text-gray-400">9.3/1</span>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Trailer</h2>
+      <div class="aspect-video rounded-lg overflow-hidden"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

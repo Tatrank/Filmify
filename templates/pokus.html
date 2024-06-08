@@ -8,9 +8,6 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-    {% block scripts %}{% endblock %}
   </head>
   <body>
     <!--
@@ -23,18 +20,11 @@
         <div class="container mx-auto flex justify-between items-center">
           <a class="text-xl font-bold" href="#"> Film Database </a>
           <nav class="hidden md:flex items-center space-x-6">
-            <a class="hover:text-gray-400" href="{{ url_for('films' ) }}">
-              Movies
-            </a>
-            {% if admin %}
-            <a class="hover:text-gray-400" href="{{ url_for('add_film' ) }}">
-              Add
-            </a>
-            {% endif %} {% if session["username"] %}
-            <a class="hover:text-gray-400" href="{{ url_for('logout' ) }}">
-              {{ session["username"] }}
-            </a>
-            {% endif %}
+            <a class="hover:text-gray-400" href="#"> Movies </a>
+            <a class="hover:text-gray-400" href="#"> TV Shows </a>
+            <a class="hover:text-gray-400" href="#"> Actors </a>
+            <a class="hover:text-gray-400" href="#"> Directors </a>
+            <a class="hover:text-gray-400" href="#"> Genres </a>
           </nav>
           <div class="md:hidden">
             <button
@@ -60,14 +50,14 @@
           </div>
         </div>
       </header>
-      <main class="flex-1 bg-gray-100 dark:bg-gray-900 py-8 px-4 md:px-8">
-        {% block content %}{% endblock %}
-      </main>
+      <main
+        class="flex-1 bg-gray-100 dark:bg-gray-900 py-8 px-4 md:px-8"
+      ></main>
       <footer class="bg-gray-900 text-white py-4 px-6 md:px-8">
         <div class="container mx-auto flex justify-between items-center">
           <p>© 2023 Film Database. All rights reserved.</p>
           <nav class="hidden md:flex items-center space-x-6">
-            <a class="hover:text-gray-400" href="#"> About </a>
+            <a class="hover:text-gray-400" href=""> About </a>
             <a class="hover:text-gray-400" href="#"> Contact </a>
             <a class="hover:text-gray-400" href="#"> Privacy </a>
             <a class="hover:text-gray-400" href="#"> Terms </a>
