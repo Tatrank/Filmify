@@ -5,5 +5,35 @@
   {% for film in films %} {% include 'film.html' %} {% endfor %}
 </div>
 {% if admin %}
-<a href="{{ url_for('add_film') }}">Add Film</a>
-{% endif %} {% endblock %}
+<div class="container mx-auto flex justify-center mt-6">
+  <a
+    href="{{ url_for('add_film' ) }}"
+    class="inline-flex items-center bg-black text-white justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 mx-auto"
+  >
+    Add Film
+  </a>
+</div>
+{% endif %} {% endblock %} {% block scripts %}
+<script>
+  function deleteFilm(film_id) {
+    console.log(film_id);
+    //rip off from this element  <input type="hidden" name="csrf_token" value="{{csrf_token()}}" /> csrf_token
+    const csrf_token = "{{csrf_token()}}";
+    console.log(csrf_token);
+    fetch(`/delete/${film_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+      body: JSON.stringify({ csrf_token: csrf_token }),
+    })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+</script>
+{% endblock %}

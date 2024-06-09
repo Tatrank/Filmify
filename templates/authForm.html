@@ -51,7 +51,7 @@
     <div class="flex items-center p-6">
       <button
         type="submit"
-        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-white hover:bg-slate-700 h-10 px-4 py-2 w-full"
       >
         Sign In
       </button>
@@ -59,11 +59,12 @@
     <div class="flex items-center p-6 justify-center">
       <a
         href="{{ url_for('signUp') }}"
-        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 justify-self-center"
+        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 hover:to-blue-700 justify-self-center"
       >
         Don't have an account? Sign up
       </a>
     </div>
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
   </form>
 </div>
 

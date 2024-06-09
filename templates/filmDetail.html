@@ -3,7 +3,7 @@
 <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
   <div>
     <img
-      src="/placeholder.svg"
+      src="{{ url_for('static', filename='uploads/' + film.image) }}"
       alt="Movie Poster"
       width="600"
       height="900"
@@ -30,57 +30,11 @@
             <img
               class="aspect-square h-full w-full"
               alt="Tim Robbins"
-              src="/placeholder-user.jpg"
+              src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
             />
           </span>
           <div>
-            <p class="font-medium">Tim Robbins</p>
-            <p class="text-gray-500 dark:text-gray-400">Andy Dufresne</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-4">
-          <span
-            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
-          >
-            <img
-              class="aspect-square h-full w-full"
-              alt="Morgan Freeman"
-              src="/placeholder-user.jpg"
-            />
-          </span>
-          <div>
-            <p class="font-medium">Morgan Freeman</p>
-            <p class="text-gray-500 dark:text-gray-400">Red</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-4">
-          <span
-            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
-          >
-            <img
-              class="aspect-square h-full w-full"
-              alt="Bob Gunton"
-              src="/placeholder-user.jpg"
-            />
-          </span>
-          <div>
-            <p class="font-medium">Bob Gunton</p>
-            <p class="text-gray-500 dark:text-gray-400">Warden Sa</p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-4">
-          <span
-            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
-          >
-            <img
-              class="aspect-square h-full w-full"
-              alt="William Sadler"
-              src="/placeholder-user.jpg"
-            />
-          </span>
-          <div>
-            <p class="font-medium">William Sadler</p>
-            <p class="text-gray-500 dark:text-gray-400">Heywood</p>
+            <p class="font-medium">{{film.actor.name}}</p>
           </div>
         </div>
       </div>
@@ -94,11 +48,11 @@
           <img
             class="aspect-square h-full w-full"
             alt="Frank Darabont"
-            src="/placeholder-user.jpg"
+            src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
           />
         </span>
         <div>
-          <p class="font-medium">Frank D</p>
+          <p class="font-medium">{{film.director.name}}</p>
         </div>
       </div>
     </div>
@@ -109,25 +63,14 @@
           class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
           data-v0-t="badge"
         >
-          Drama
-        </div>
-        <div
-          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
-          data-v0-t="badge"
-        >
-          Crime
-        </div>
-        <div
-          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
-          data-v0-t="badge"
-        >
-          Mystery
+          {{film.category.name}}
         </div>
       </div>
     </div>
     <div class="space-y-2">
-      <h2 class="text-2xl font-bold">Ratin</h2>
+      <h2 class="text-2xl font-bold">Rating</h2>
       <div class="flex items-center space-x-2">
+        <!-- SVG Stars -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -144,79 +87,142 @@
             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
           ></polygon>
         </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
+        <!-- Repeat the SVG element for more stars -->
+        <span class="text-gray-500 dark:text-gray-400"
+          >{{film.rating}}/100</span
         >
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
-        >
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
-        >
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-gray-400"
-        >
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
-        </svg>
-        <span class="text-gray-500 dark:text-gray-400">9.3/1</span>
       </div>
     </div>
-
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">Trailer</h2>
-      <div class="aspect-video rounded-lg overflow-hidden"></div>
+      <div class="aspect-video rounded-lg overflow-hidden">
+        <iframe
+          class="w-full h-80"
+          src="{{film.trailer}}"
+          frameborder="0"
+          allow="accelerometer; autoplay w-full; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Comments</h2>
+      <div class="grid gap-4">
+        {% for comment in film.comment %}
+        <div class="flex items-start gap-4">
+          <span
+            class="relative flex shrink-0 overflow-hidden rounded-full h-10 w-10"
+          >
+            <img
+              class="aspect-square h-full w-full"
+              src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
+            />
+          </span>
+          <div class="flex-1 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="font-medium">{{comment.user.username}}</div>
+              <div class="text-gray-500 dark:text-gray-400 text-sm">
+                {% if session["username"] == comment.user.username or
+                session["username"] == "admin" %}
+                <div
+                  href="{{url_for('delete_comment', id=comment.id)}}"
+                  class="text-red-500 hover:text-red-700 cursor-pointer"
+                  onclick="deleteComment({{comment.id}})"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400">{{comment.text}}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% if session["username"] %}
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Add a Review</h2>
+      <form class="grid gap-4" id="commentForm">
+        <div class="space-y-2">
+          <label
+            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            for="review"
+          >
+            Review
+          </label>
+          <textarea
+            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            id="text"
+            name="text"
+            placeholder="Write your review"
+            rows="4"
+          ></textarea>
+        </div>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-white hover:bg-slate-700 h-10 px-4 py-2 w-full"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+    {% endif %}
   </div>
 </div>
+
+<script>
+  document
+    .getElementById("commentForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("text", document.getElementById("text").value);
+      formData.append("film_id", "{{ film.id }}");
+      formData.append("csrf_token", "{{ csrf_token() }}");
+
+      fetch('{{ url_for("add_comment") }}', {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token() }}",
+        },
+        body: formData,
+      })
+        .then((response) => {
+          if (response.ok) {
+            location.reload(); // Handle successful submission
+          } else {
+            console.error("Error:", response.statusText); // Handle errors
+          }
+        })
+        .catch((error) => {
+          console.error("Network error:", error); // Handle network errors
+        });
+    });
+
+  deleteComment = (id) => {
+    const csrf_token = " {{csrf_token()}}";
+    fetch('{{url_for("delete_comment", id=0)}}'.replace("0", id), {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          //refresh the page
+          location.reload();
+          // Handle successful submission (e.g., reload comments, show a message)
+        } else {
+          // Handle errors (e.g., show an error message)
+        }
+      })
+      .catch((error) => {
+        // Handle network errors
+      });
+  };
+</script>
 
 {% endblock %}

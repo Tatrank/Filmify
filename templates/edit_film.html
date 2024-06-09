@@ -1,5 +1,9 @@
 {% extends 'base.html' %} {% block content %}
-<form method="post">
+<form
+  method="post"
+  class="rounded-lg border bg-card text-card-foreground shadow-sm justify-self-center w-full max-w-md p-4"
+  enctype="multipart/form-data"
+>
   <label for="title">Title</label>
   <input type="text" value="{{film.title}}" name="title" id="title" />
   <label for="description">Description</label>
@@ -18,6 +22,46 @@
   />
   <label for="length">Length</label>
   <input type="text" value="{{film.length}}" name="length" id="length" />
+  <label for="category">Category</label>
+  <input
+    type="text"
+    value="{{film.category.name}}"
+    name="category"
+    id="category"
+  />
+  <label for="director">Director</label>
+  <input
+    type="text"
+    value="{{film.director.name}}"
+    name="director"
+    id="director"
+  />
+  <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+  <label for="actor">Actor</label>
+  <input type="text" value="{{film.actor.name}}" name="actor" id="actor" />
+  <div class="space-y-2">
+    <label
+      class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      for="image"
+    >
+      Image
+    </label>
+    <input
+      class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      id="image"
+      name="image"
+      type="file"
+    />
+  </div>
+  <label for="rating">Rating</label>
+  <input
+    type="text"
+    value="{{film.director.rating}}"
+    name="rating"
+    id="rating"
+  />
+  <label for="trailer">Trailer</label>
+  <input type="text" name="trailer" value="{{film.trailer}}" id="trailer" />
   <button type="submit">Submit</button>
 </form>
 

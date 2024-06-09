@@ -1,15 +1,1 @@
-function deleteFilm(film_id) {
-  console.log(film_id);
-  fetch(`/delete/${film_id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then(() => {
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
+// I will keep it here for now just in case of need to use it in the future

@@ -1,7 +1,95 @@
-{% extends 'base.html' %} {% block content %} {% for user in users %}
-<div>
-  <h1>{{ user.username }}</h1>
-  <p>{{ user.password }}</p>
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto">
+  <div class="grid gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">User Management</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full table-auto">
+          <thead>
+            <tr class="bg-gray-200 dark:bg-gray-700">
+              <th class="px-4 py-2 text-left">Name</th>
+              <th class="px-4 py-2 text-left">Role</th>
+              <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2">{{ user.username }}</td>
+              <td class="px-4 py-2">
+                {% if user.admin %} admin {% else %} user {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <button
+                  onclick="changePrivileges({{ user.id }}, {{ 'true' if not user.admin else 'false' }})"
+                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3"
+                >
+                  {% if user.admin %} Revoke Admin {% else %} Make Admin {%
+                  endif %}
+                </button>
+                <button
+                  onclick="deleteUser({{ user.id }})"
+                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
-{% endfor %} {% endblock %}
+{% endblock %} {% block scripts %}
+<script>
+  function changePrivileges(id, makeAdmin) {
+    const csrf_token = "{{ csrf_token() }}";
+    fetch(`{{ url_for('userAPI', id='0') }}`.replace("0", id), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+      body: JSON.stringify({ admin: makeAdmin }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          response.json().then((data) => {
+            console.error("Error:", data);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  function deleteUser(id) {
+    const csrf_token = "{{ csrf_token() }}";
+    fetch(`{{ url_for('userAPI', id='0') }}`.replace("0", id), {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          response.json().then((data) => {
+            console.error("Error:", data);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+</script>
+{% endblock %}

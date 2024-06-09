@@ -6,7 +6,7 @@
     <span class="sr-only">View Movie</span>
   </a>
   <img
-    src="/placeholder.svg"
+    src="{{ url_for('static', filename='uploads/' + film.image) }}"
     alt="Movie Poster"
     width="300"
     height="450"

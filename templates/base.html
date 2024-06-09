@@ -9,7 +9,10 @@
       rel="stylesheet"
     />
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
+    <script
+      src="https://kit.fontawesome.com/4b8a91679a.js"
+      crossorigin="anonymous"
+    ></script>
     {% block scripts %}{% endblock %}
   </head>
   <body>
@@ -17,19 +20,24 @@
 // v0 by Vercel.
 // https://v0.dev/t/Rs1VPdp19N1
 -->
-
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
     <div class="flex flex-col min-h-screen">
       <header class="bg-gray-900 text-white py-4 px-6 md:px-8">
         <div class="container mx-auto flex justify-between items-center">
-          <a class="text-xl font-bold" href="#"> Film Database </a>
+          <a class="text-xl font-bold" href="{{ url_for('films' ) }}"
+            ><i class="fa-solid fa-film"></i> Filmify
+          </a>
           <nav class="hidden md:flex items-center space-x-6">
             <a class="hover:text-gray-400" href="{{ url_for('films' ) }}">
               Movies
             </a>
-            {% if admin %}
+            {% if session["admin"] %}
             <a class="hover:text-gray-400" href="{{ url_for('add_film' ) }}">
               Add
             </a>
+            <a class="hover:text-gray-400" href="{{ url_for('users' ) }}"
+              >Users</a
+            >
             {% endif %} {% if session["username"] %}
             <a class="hover:text-gray-400" href="{{ url_for('logout' ) }}">
               {{ session["username"] }}
@@ -67,10 +75,7 @@
         <div class="container mx-auto flex justify-between items-center">
           <p>© 2023 Film Database. All rights reserved.</p>
           <nav class="hidden md:flex items-center space-x-6">
-            <a class="hover:text-gray-400" href="#"> About </a>
-            <a class="hover:text-gray-400" href="#"> Contact </a>
-            <a class="hover:text-gray-400" href="#"> Privacy </a>
-            <a class="hover:text-gray-400" href="#"> Terms </a>
+            <a class="hover:text-gray-400" href="#"></a>
           </nav>
         </div>
       </footer>
