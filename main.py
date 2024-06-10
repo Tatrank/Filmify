@@ -2,18 +2,13 @@
 # An object of Flask class is our WSGI application.
 from flask import Flask, render_template, request,jsonify, g, make_response, session, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
-import sqlite3
 from flask_wtf import CSRFProtect
 from flask_bcrypt import Bcrypt 
-import jwt
-import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import os
 import imghdr
 import uuid
-import selenium
-import urllib.request
 from bs4 import BeautifulSoup
 import requests
 # Flask constructor takes the name of 
