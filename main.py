@@ -43,6 +43,8 @@ class Film(db.Model):
     image = db.Column(db.String(100), nullable=False, default='Untitled5.png')
     comment = db.relationship('Comment', backref='film', lazy=True)
     rating = db.Column(db.Float, nullable=True, default=0.0)
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Film %r>' % self.title
 
@@ -212,6 +214,10 @@ def home():
 def films():
     if not session.get('username'):
         return redirect(url_for('home'))
+    serche = request.args.get('search')
+    if serche:
+        films = Film.query.filter(Film.title.contains(serche)).all()
+        return render_template('films.html', films=films, admin=session['admin'])
     films = Film.query.all()
     return render_template('films.html', films=films, admin=session['admin'])
 
@@ -299,6 +305,7 @@ def add_film():
         actor_name = request.form['actor']
         image = request.files.get("image")
         csfd = request.form['csfd']
+        rating = request.form['rating']
         rating = scraper(csfd) if csfd else None
         if image:
             filename = secure_filename(image.filename)
@@ -385,10 +392,20 @@ def userAPI(id):
     session.pop('user_id', None)
     return 'User was deleted', 200
 
-
+@app.route("/search", methods=['GET'])
+def search():
+    serche = request.args.get('search')
+    print(serche)
+    if serche:
+    
+        #i want to retur films as a json but first i need to query them and after that i need to convert them to json
+        films = Film.query.filter(Film.title.contains(serche)).all()
+        films = [film.as_dict() for film in films]
+        return jsonify(films)
+    return 'No films found', 404
 
 # main driver function
 if __name__ == '__main__':
     # run() method of Flask class runs the application 
     # on the local development server.
-    app.run(debug=True, port=8000)
+    app.run(debug=True,) 
