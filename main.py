@@ -10,12 +10,12 @@ import os
 import imghdr
 import uuid
 from bs4 import BeautifulSoup
+from flask_socketio import SocketIO, emit
+import json
 import requests
 # Flask constructor takes the name of 
 # current module (__name__) as argument.
 app = Flask(__name__)
-
-
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,7 +27,7 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app) 
 app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a secure key
 
-
+socketio = SocketIO(app)
 csrf = CSRFProtect(app) 
 app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a secure key
 class Film(db.Model):
@@ -121,6 +121,14 @@ def create_db():
     except Exception as e:
         return str(e)
 
+@app.route('/pokus')
+def pokus():
+    return render_template('pokus.html')
+
+@socketio.on("refresh")
+def comments():
+    emit("refreshComments", broadcast=True) 
+
 
 
 def scraper(URL):
@@ -184,6 +192,8 @@ url
 
 
 
+
+
 @app.route("/database/add_comment")
 def add_comment_database():
     comment = Comment(text='This is a comment', filmId=1, userId=1)
@@ -232,9 +242,7 @@ def delete_comment(id):
     db.session.commit()
     return 'Comment was deleted', 200
 
-@app.route("/pokus")
-def pokus():
-    return render_template('pokus.html')
+
 
 
 @app.route('/', methods=['GET', 'POST'])
