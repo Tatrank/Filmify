@@ -1,181 +1,164 @@
 {% extends 'base.html' %} {% block content %}
 <div class="flex justify-center">
   <div class="container flex justify-center">
-    <form
-      method="post"
+    <form method="post"
       class="rounded-lg border bg-card text-card-foreground shadow-sm justify-self-center w-full max-w-md p-4"
-      enctype="multipart/form-data"
-    >
-      <div class="flex flex-col space-y-2">
-        <h3
-          class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight"
-        >
-          Add Film
-        </h3>
-        <p class="text-sm text-muted-foreground">Enter film</p>
-      </div>
-      <div class="space-y-2">
-        <div class="space-y-2">
-          <label
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            for="title"
-          >
-            Title
-          </label>
-          <input
-            name="title"
-            id="title"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            type="text"
-            required="true"
-          />
+      enctype="multipart/form-data">
+
+      <input id="csfd" name="csfd" type="checkbox" value="false" />
+      <div class="" id="formik">
+        <div class="flex flex-col space-y-2">
+          <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">
+            Add Film
+          </h3>
+          <p class="text-sm text-muted-foreground">Enter film</p>
+          <input type="hidden" name="csfdHidden" id="csfdHidden" value="false" />
+
         </div>
-                <div class="space-y-2">
-          <label
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            for="description"
-          >
-            Description
-          </label>
-          <textarea
-            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="description"
-            name="description"
-            placeholder="Enter the film's synopsis"
-            rows="4"
-          ></textarea>
+        <div class="">
+          <div class="space-y-2">
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="title">
+                Title
+              </label>
+              <input name="title" id="title"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                type="text" required="true" value="nothing" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                for="description">
+                Description
+              </label>
+              <textarea
+                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="description" name="description" placeholder="Enter the film's synopsis" rows="4"
+                value="nothing"></textarea>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="release_year">
+              Release Year
+            </label>
+            <input name="release_year" id="release_year"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              type="number" required="true" value=2000 />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="password">
+              Length
+            </label>
+            <input name="length" id="length"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              type="number" required="true" value=120 />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="director">
+              Director
+            </label>
+            <input name="director" id="director"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              type="text" required="true" value="nothing" />
+            <div class="showdirector"></div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="category">
+              Category
+            </label>
+            <input name="category" id="category"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              type="text" required="true" value="nothing" />
+            <div class="" id="showcategory">
+
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="actor">
+              Main actor
+            </label>
+            <input name="actor" id="actor"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              type="text" required="true" value="nothing" />
+            <div class="" id="showactor">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="rating">
+              Rating
+            </label>
+            <input type="number" name="rating" id="rating" value="0" />
+
+          </div>
+          <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
         </div>
       </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="release_year"
-        >
-          Release Year
+      <div id="csfdForm" class="space-y-2">
+        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          for="csfdUrl">
+          Add CSFD
         </label>
         <input
-          name="release_year"
-          id="release_year"
           class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="number"
-          required="true"
-        />
+          type="text" name="csfdUrl" id="csfdUrl" value="nothing" />
       </div>
+
+      <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        for="trailer">
+        Trailer
+      </label>
+      <input name="trailer" id="trailer"
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        type="text" required="true" value="nothing" />
+
+
+
       <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="password"
-        >
-          Length
-        </label>
-        <input
-          name="length"
-          id="length"
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="number"
-          required="true"
-        />
-      </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="director"
-        >
-          Director
-        </label>
-        <input
-          name="director"
-          id="director"
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="text"
-          required="true"
-        />
-      </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="catregory"
-        >
-          Category
-        </label>
-        <input
-          name="category"
-          id="category"
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="text"
-          required="true"
-        />
-      </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="actor"
-        >
-          Main actor
-        </label>
-        <input
-          name="actor"
-          id="actor"
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="text"
-          required="true"
-        />
-      </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="csfd"
-        >
-          CSFD
-        </label>
-        <input
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="text"
-          name="csfd"
-          id="csfd"
-          placeholder=""
-          required="true"
-        />
-      </div>
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="trailer"
-        >
-          Trailer
-        </label>
-        <input
-          name="trailer"
-          id="trailer"
-          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="text"
-          required="true"
-        />
-      <div class="space-y-2">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          for="image"
-        >
+        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          for="image">
           Image
         </label>
         <input
-          required="true"
           class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          id="image"
-          name="image"
-          type="file"
-        />
+          id="image" name="image" type="file" />
+
       </div>
-      <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
+
+
       <div class="flex items-center p-6">
-        <button
-          type="submit"
-          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-white hover:bg-slate-700 h-10 px-4 py-2 w-full"
-        >
+        <button type="submit"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-white hover:bg-slate-700 h-10 px-4 py-2 w-full">
           Add Film
         </button>
+      </div>
 
     </form>
   </div>
 </div>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+  document.getElementById("csfd").addEventListener("change", function () {
+    if (this.checked) {
+      document.getElementById("csfdHidden").value = true;
+      document.getElementById("formik").classList.add("hidden");
+      document.getElementById("csfdForm").classList.remove("hidden");
+    } else {
+      document.getElementById("csfdHidden").value = false;
+      document.getElementById("formik").classList.remove("hidden");
+      document.getElementById("csfdForm").classList.add("hidden");
+    }
+  });
+
+</script>
 {% endblock %}

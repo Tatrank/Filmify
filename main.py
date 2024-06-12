@@ -63,6 +63,8 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     admin = db.Column(db.Boolean(), nullable=False, default=False )
     comment = db.relationship('Comment', backref='user', lazy=True)
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<User %r>' % self.username
     
@@ -71,6 +73,8 @@ class Actor(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
     film = db.relationship('Film', backref='actor', lazy=True)
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Actor %r>' % self.name
 
@@ -78,6 +82,8 @@ class Director(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
     film = db.relationship('Film', backref='director', lazy=True)
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Director %r>' % self.name
 
@@ -86,6 +92,8 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
     film = db.relationship('Film', backref='category', lazy=True)
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Category %r>' % self.name
 
@@ -97,6 +105,8 @@ class Comment(db.Model):
     filmId = db.Column(db.Integer, db.ForeignKey('film.id'))
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
     time = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Comment %r>' % self.text
 
@@ -107,9 +117,9 @@ class Comment(db.Model):
 def create_db():
     try:
         db.create_all()
+        return 'Database was created'
     except Exception as e:
         return str(e)
-    return 'Database was created'
 
 
 
@@ -126,8 +136,12 @@ def scraper(URL):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Najděte hodnocení
-        rating_element = soup.find('div', class_='film-rating-average')
-
+        rating_element = soup.find('div', class_='film-rating-average').getText()
+        title_element = soup.find('div', class_='film-header-name').find('h1').getText()
+        description_element = soup.find('div', class_='plot-full').find('p').getText()
+        lentgh_year = soup.find('div', class_='origin').getText().split(',')
+        year = int(lentgh_year[1])
+        time = (lentgh_year[2].split(' ')[1] )       
         if rating_element:
             rating = rating_element.text.strip()
             return rating.split('%')[0]
@@ -135,6 +149,39 @@ def scraper(URL):
             return False
     except Exception as e:
         return False
+
+
+@app.route('/scrapPokus')
+def scrapPokus(
+url
+
+):
+
+    
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Ověření úspěšného načtení stránky
+      
+        # Vytvoření objektu BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+   
+   
+        rating_element = int(soup.find('div', class_='film-rating-average').text.strip().split('%')[0])
+        title_element = soup.find('div', class_='film-header-name').find('h1').text.strip()
+        description_element = soup.find('div', class_='plot-full').find('p').text.strip().strip()
+        lentgh_year = soup.find('div', class_='origin').text.strip().split(',')
+        year = int(lentgh_year[1].strip())
+        time =int( lentgh_year[2].split(' ')[1]     )   
+        director = soup.find('div', class_='creators').find('a').text.strip()
+        category = soup.find('div', class_='genres').find('a').text.strip()
+        actor = soup.find('div', class_='creators').find_all('a')[4].text.strip()
+ 
+        return {"title": title_element, "description": description_element, "release_year": year, "length": time, "director": director, "category": category, "actor": actor,"rating": rating_element}
+\
+
 
 
 @app.route("/database/add_comment")
@@ -212,14 +259,15 @@ def home():
 
 @app.route('/films', methods=['GET'])
 def films():
+    page = request.args.get('page', 1, type=int)
     if not session.get('username'):
         return redirect(url_for('home'))
     serche = request.args.get('search')
     if serche:
-        films = Film.query.filter(Film.title.contains(serche)).all()
+        films = Film.query.filter(Film.title.contains(serche)).paginate(page=page, per_page=5)
         return render_template('films.html', films=films, admin=session['admin'])
-    films = Film.query.all()
-    return render_template('films.html', films=films, admin=session['admin'])
+    films = Film.query.paginate(page=page, per_page=5)
+    return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
 
 
 @app.route('/delete/<int:id>', methods=['DELETE'])
@@ -289,56 +337,108 @@ def edit_film(id):
         film.category = category
         db.session.commit()
         return redirect('/films')
+    print(film.actor.name)
+    print(film.director.name)
+    print(film.category.name)
+    
     return render_template('edit_film.html', film=film)
 @app.route('/add_film', methods=['GET', 'POST'])
 def add_film():
     if not session.get('admin'):
         return 'You are not authorized to add a new film', 403
     if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
-        release_year = request.form['release_year']
-        length = request.form['length']
-        trailer = request.form['trailer']
-        director_name = request.form['director']
-        category_name = request.form['category']
-        actor_name = request.form['actor']
-        image = request.files.get("image")
-        csfd = request.form['csfd']
-        rating = request.form['rating']
-        rating = scraper(csfd) if csfd else None
-        if image:
-            filename = secure_filename(image.filename)
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in ['.jpg', '.png', '.jpeg'] or file_ext != validate_image(image.stream):
-                return {"error": "File type not supported"}, 400
-            unique_str = str(uuid.uuid4())[:8]
-            image.filename = f"{unique_str}_{filename}"
-            image.save(os.path.join(basedir, 'static/uploads', image.filename))
+        print(request.form["csfdHidden"])
+        #why it is string i dont know, but it is so i need to compare it with string 'true' not with boolean True 
+        if request.form["csfdHidden"] == 'true':
+            
+            print('csfdHidden')
+
+            url = request.form["csfdUrl"]
+            data = scrapPokus(url)
+    
+            title = data['title']
+            description = data['description']
+            release_year = data['release_year']
+            length = data['length']
+            trailer = request.form['trailer']
+            director_name = data['director']
+            category_name = data['category']
+            actor_name = data['actor']
+            image = request.files.get("image")
+            if image:
+                filename = secure_filename(image.filename)
+                file_ext = os.path.splitext(filename)[1]
+                if file_ext not in ['.jpg', '.png', '.jpeg'] or file_ext != validate_image(image.stream):
+                    return {"error": "File type not supported"}, 400
+                unique_str = str(uuid.uuid4())[:8]
+                image.filename = f"{unique_str}_{filename}"
+                image.save(os.path.join(basedir, 'static/uploads', image.filename))
+            else:
+                image.filename = 'untitled5.jpg'
+            
+            director = Director.query.filter_by(name=director_name).first()
+            if not director:
+                director = Director(name=director_name)
+                db.session.add(director)
+                db.session.commit()
+            category = Category.query.filter_by(name=category_name).first()
+            if not category:
+                category = Category(name=category_name)
+                db.session.add(category)
+                db.session.commit()
+            actor = Actor.query.filter_by(name=actor_name).first()
+            if not actor:
+                actor = Actor(name=actor_name)
+                db.session.add(actor)
+                db.session.commit()
+            print(image.filename)
+            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=category, actor=actor, rating=data['rating'])
+            db.session.add(film)
+            db.session.commit()
+            print(film.image)
         else:
-            image.filename = 'default.jpg'
-        
-        director = Director.query.filter_by(name=director_name).first()
-        if not director:
-            director = Director(name=director_name)
-            db.session.add(director)
-            db.session.commit()
+            title = request.form['title']
+            description = request.form['description']
+            release_year = request.form['release_year']
+            length = request.form['length']
+            trailer = request.form['trailer']
+            director_name = request.form['director']
+            category_name = request.form['category']
+            actor_name = request.form['actor']
+            image = request.files.get("image")
+            rating = request.form['rating']
+            if image:
+                filename = secure_filename(image.filename)
+                file_ext = os.path.splitext(filename)[1]
+                if file_ext not in ['.jpg', '.png', '.jpeg'] or file_ext != validate_image(image.stream):
+                    return {"error": "File type not supported"}, 400
+                unique_str = str(uuid.uuid4())[:8]
+                image.filename = f"{unique_str}_{filename}"
+                image.save(os.path.join(basedir, 'static/uploads', image.filename))
+            else:
+                image.filename = 'untitled5.jpg'
+            
+            director = Director.query.filter_by(name=director_name).first()
+            if not director:
+                director = Director(name=director_name)
+                db.session.add(director)
+                db.session.commit()
 
-        category = Category.query.filter_by(name=category_name).first()
-        if not category:
-            category = Category(name=category_name)
-            db.session.add(category)
-            db.session.commit()
+            category = Category.query.filter_by(name=category_name).first()
+            if not category:
+                category = Category(name=category_name)
+                db.session.add(category)
+                db.session.commit()
 
-        actor = Actor.query.filter_by(name=actor_name).first()
-        if not actor:
-            actor = Actor(name=actor_name)
-            db.session.add(actor)
-            db.session.commit()
+            actor = Actor.query.filter_by(name=actor_name).first()
+            if not actor:
+                actor = Actor(name=actor_name)
+                db.session.add(actor)
+                db.session.commit()
 
-        film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=category, actor=actor, rating=rating)
-        db.session.add(film)
-        db.session.commit()
+            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=category, actor=actor, rating=rating)
+            db.session.add(film)
+            db.session.commit()
         return redirect('/films')
     return render_template('add_film.html')
 
@@ -391,6 +491,30 @@ def userAPI(id):
     session.pop('admin', None)
     session.pop('user_id', None)
     return 'User was deleted', 200
+
+@app.route("/api/category", methods=["GET"])
+def categorySearch():
+    category = request.args.get('search')
+    category = Category.query.filter(Category.name.contains(category)).all()
+    category = [category.as_dict() for category in category]
+ 
+ 
+    
+    return jsonify(category)
+
+@app.route("/api/actor", methods=["GET"])
+def actorSearch():
+    actor = request.args.get('search')
+    actor = Actor.query.filter(Actor.name.contains(actor)).all()
+    actor = [actor.as_dict() for actor in actor]
+    return jsonify(actor)
+
+@app.route("/api/director", methods=["GET"])
+def directorSearch():
+    director = request.args.get('search')
+    director = Director.query.filter(Director.name.contains(director)).all()
+    director = [director.as_dict() for director in director]
+    return jsonify(director)
 
 @app.route("/search", methods=['GET'])
 def search():

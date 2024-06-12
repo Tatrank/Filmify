@@ -6,8 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script src="https://kit.fontawesome.com/4b8a91679a.js" crossorigin="anonymous"></script>
+
+
+
+  <script src="https://unpkg.com/htmx.org@1.9.12"
+    integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+    crossorigin="anonymous"></script>
+
+
+
+
 </head>
 
 <body>
@@ -21,8 +30,9 @@
       <div class="container mx-auto flex justify-between items-center">
         <a class="text-xl font-bold" href="{{ url_for('films' ) }}"><i class="fa-solid fa-film"></i> Filmify
         </a>
-        <div class="flex items-center space-x-4">
-          <div class="relative">
+        <div class="flex items-center ">
+          <div
+            class="relative flex h-10 w-full border border-input px-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-4 py-2 rounded-md bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
               class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 w-5 h-5">
@@ -30,19 +40,20 @@
               <path d="m21 21-4.3-4.3"></path>
             </svg>
             <form id="searchForm" class="flex">
-              <input
-                class="flex h-10 w-full border border-input px-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-4 py-2 rounded-md bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600"
-                placeholder="Search films..." type="text" name="search" id="search" />
+              <input class="bg-transparent focus:border-none focus:outline-none" placeholder="Search films..."
+                type="text" name="search" id="search" />
               <button>
 
                 Submit
               </button>
             </form>
-            <div id="serchResults" class="absolute bg-black">
+          </div>
 
-            </div>
+          <div id="serchResults" class="absolute space-x-0 top-16 w-24 bg-black">
+
           </div>
         </div>
+
         <nav class="hidden md:flex items-center space-x-6">
 
           <a class="hover:text-gray-400" href="{{ url_for('films' ) }}">
@@ -86,6 +97,8 @@
   </div>
 </body>
 {% block scripts %}{% endblock %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script>
 
   function deleteFilm(film_id) {
@@ -127,12 +140,15 @@
     searchResults.innerHTML = "";
     if (data.length === 0) {
       const div = document.createElement("div");
+      div.classList.add("w-36");
       div.innerHTML = "No results found";
       searchResults.appendChild(div);
     }
     data.forEach((film) => {
       const div = document.createElement("div");
-      div.innerHTML = `<a href="/film/${film.id}">${film.title}</a>`;
+
+      div.classList.add("w-36");
+      div.innerHTML = `<a class="w-full bg-gray-900" href="/film/${film.id}">${film.title}</a>`;
       searchResults.appendChild(div);
     });
 
