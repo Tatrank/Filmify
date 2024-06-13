@@ -261,9 +261,9 @@ def home():
                 session['user_id'] = user.id   
                 return redirect('/films')
             else:
-                return 'error'
+                return render_template('authForm.html', error=True)
 
-    return render_template('authForm.html')
+    return render_template('authForm.html', error=False)
 
 @app.route('/films', methods=['GET'])
 def films():
@@ -459,6 +459,14 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route("/api/user", methods=["GET"])
+def user():
+    user = request.args.get('search')
+    user = User.query.filter_by(username=user).all()
+    if not user:
+        return jsonify({"user" : True})
+    return jsonify({"user" : False})
+
 
 @app.route('/signUp', methods=['GET', 'POST'])
 def signUp():
@@ -467,7 +475,7 @@ def signUp():
         username = request.form['Username']
         user = User.query.filter_by(username=username).first()
         if user:
-            return 'User already exists'
+            return  render_template('signUp.html', error='User already exists')
         new_user = User(username=username, password=bcrypt.generate_password_hash(password).decode('utf-8'))
         db.session.add(new_user)
         db.session.commit()
