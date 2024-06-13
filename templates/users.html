@@ -1,4 +1,11 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block title %}
+User Management
+{% endblock %}
+
+
+{% block content %}
 <div class="container mx-auto">
   <div class="grid gap-6">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
@@ -20,17 +27,13 @@
                 {% if user.admin %} admin {% else %} user {% endif %}
               </td>
               <td class="px-4 py-2">
-                <button
-                  onclick="changePrivileges({{ user.id }}, {{ 'true' if not user.admin else 'false' }})"
-                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3"
-                >
+                <button onclick="changePrivileges({{ user.id }}, {{ 'true' if not user.admin else 'false' }})"
+                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
                   {% if user.admin %} Revoke Admin {% else %} Make Admin {%
                   endif %}
                 </button>
-                <button
-                  onclick="deleteUser({{ user.id }})"
-                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3"
-                >
+                <button onclick="deleteUser({{ user.id }})"
+                  class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3">
                   Delete
                 </button>
               </td>
