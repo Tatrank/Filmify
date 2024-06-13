@@ -66,7 +66,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    admin = db.Column(db.Boolean(), nullable=False, default=False )
+    admin = db.Column(db.Boolean(), nullable=False, default=True )
     comment = db.relationship('Comment', backref='user', lazy=True)
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
