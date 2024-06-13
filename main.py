@@ -37,7 +37,6 @@ class Film(db.Model):
     release_year = db.Column(db.Integer, nullable=False, )
     length = db.Column(db.Integer, nullable=False)
     actorId = db.Column(db.Integer, db.ForeignKey('actor.id'))
-    categoryId = db.Column(db.Integer, db.ForeignKey('category.id'))
     directorId = db.Column(db.Integer, db.ForeignKey('director.id'))
     trailer = db.Column(db.String(100), nullable=False, default='https://www.youtube.com/watch?v=6hB3S9bIaco')
     image = db.Column(db.String(100), nullable=False, default='Untitled5.png')
@@ -47,6 +46,12 @@ class Film(db.Model):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Film %r>' % self.title
+
+category_film = db.Table('category_film',
+    db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True),
+    db.Column('film_id', db.Integer, db.ForeignKey('film.id'), primary_key=True)
+)
+
 
 
 def validate_image(stream):
@@ -91,7 +96,8 @@ class Director(db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
-    film = db.relationship('Film', backref='category', lazy=True)
+    film = db.relationship('Film', secondary=category_film, backref='category', lazy=True)
+
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
@@ -188,7 +194,7 @@ url
         actor = soup.find('div', class_='creators').find_all('a')[4].text.strip()
  
         return {"title": title_element, "description": description_element, "release_year": year, "length": time, "director": director, "category": category, "actor": actor,"rating": rating_element}
-\
+
 
 
 
@@ -219,9 +225,21 @@ def add_user():
     return 'User was added'
 @app.route('/database/add_film')
 def database_add_film():
-    film = Film(title='The Shawshank Redemption', description='Two imprisoned', release_year=1994, length=142, actorId=1, categoryId=1, directorId=1, trailer='https://www.youtube.com/watch?v=6hB3S9bIaco', image='Untitled5.png', rating=9.3)
+    categoryList = ["action", "horror"]
+    categories = []
+    for category in categoryList:
+        if Category.query.filter_by(name=category).first():
+            categories.append(Category.query.filter_by(name=category).first())
+            continue
+        category = Category(name=category)
+        db.session.add(category)
+        db.session.commit()
+        categories.append(category)
+
+    film = Film(title='The Shawshank Redemption', description='Two imprisoned', release_year=1994, length=142, actorId=1, category=categories, directorId=1, trailer='https://www.youtube.com/watch?v=6hB3S9bIaco', image='Untitled5.png', rating=9.3)
     db.session.add(film)
     db.session.commit()
+    print(film.category)
     return 'Film was added'
 
 @app.route("/add_comment",methods=['POST'])
@@ -405,6 +423,9 @@ def add_film():
             db.session.commit()
             print(film.image)
         else:
+            print(request.form.getlist("category"))
+
+
             title = request.form['title']
             description = request.form['description']
             release_year = request.form['release_year']
@@ -432,21 +453,22 @@ def add_film():
                 db.session.add(director)
                 db.session.commit()
 
-            category = Category.query.filter_by(name=category_name).first()
-            if not category:
-                category = Category(name=category_name)
-                db.session.add(category)
-                db.session.commit()
-
             actor = Actor.query.filter_by(name=actor_name).first()
             if not actor:
                 actor = Actor(name=actor_name)
                 db.session.add(actor)
                 db.session.commit()
+            categories = []
+            for category_name in request.form.getlist("category"):
+                category = Category.query.filter_by(name=category_name).first()
+                if not category:
+                        category = Category(name=category_name)
+                        db.session.add(category)
+                        db.session.commit()
+                categories.append(category)
 
-            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=category, actor=actor, rating=rating)
-            db.session.add(film)
-            db.session.commit()
+
+            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, actor=actor, category=categories, rating=rating)
         return redirect('/films')
     return render_template('add_film.html')
 
