@@ -39,7 +39,7 @@ class Film(db.Model):
     actorId = db.Column(db.Integer, db.ForeignKey('actor.id'))
     directorId = db.Column(db.Integer, db.ForeignKey('director.id'))
     trailer = db.Column(db.String(100), nullable=False, default='https://www.youtube.com/watch?v=6hB3S9bIaco')
-    image = db.Column(db.String(100), nullable=False, default='Untitled5.png')
+    image = db.Column(db.String(100), nullable=False, default='PlaceholderFilm.png')
     comment = db.relationship('Comment', backref='film', lazy=True)
     rating = db.Column(db.Float, nullable=True, default=0.0)
     def as_dict(self):
@@ -225,7 +225,22 @@ def add_user():
     return 'User was added'
 @app.route('/database/add_film')
 def database_add_film():
-    categoryList = ["action", "horror"]
+    categoryList = ["action", "horror", "adventure" , "comedy", "drama", "thriller", "crime", "fantasy", "sci-fi", "mystery", "animation", "family", "romance", "biography", "history", "war", "western", "musical", "sport", "music", "documentary", "short", "film-noir", "adult"]
+    #add bunch of normal names
+    actorList = [  "Tom Hanks", "Morgan Freeman", "Tim Robbins", "Andy Dufresne", "William Sadler", "Clancy Brown", "Gil Bellows", "James Whitmore", "Bob Gunton", "Frank Darabont", "Stephen King", "Roger Deakins", "Thomas Newman", "Richard Francis-Bruce", "Terence Marsh", "Linda R. Chen", "Niki Marvin", "Castle Rock Entertainment", "Columbia Pictures", "Warner Bros."]
+    directorList = ["Frank Darabont", "Stephen King", "Roger Deakins", "Thomas Newman", "Richard Francis-Bruce", "Terence Marsh", "Linda R. Chen", "Niki Marvin", "Castle Rock Entertainment", "Columbia Pictures", "Warner Bros."]
+    for actor in actorList:
+        if Actor.query.filter_by(name=actor).first():
+            continue
+        actor = Actor(name=actor)
+        db.session.add(actor)
+        db.session.commit()
+    for director in directorList:
+        if Director.query.filter_by(name=director).first():
+            continue
+        director = Director(name=director)
+        db.session.add(director)
+        db.session.commit()
     categories = []
     for category in categoryList:
         if Category.query.filter_by(name=category).first():
@@ -236,10 +251,13 @@ def database_add_film():
         db.session.commit()
         categories.append(category)
 
-    film = Film(title='The Shawshank Redemption', description='Two imprisoned', release_year=1994, length=142, actorId=1, category=categories, directorId=1, trailer='https://www.youtube.com/watch?v=6hB3S9bIaco', image='Untitled5.png', rating=9.3)
+    film = Film(title='The Shawshank Redemption', description='Two imprisoned', release_year=1994, length=142, actorId=1, category=categories, directorId=1, trailer='https://www.youtube.com/watch?v=6hB3S9bIaco', image='PlaceholderFilm.png', rating=9.3)
     db.session.add(film)
     db.session.commit()
-    print(film.category)
+
+    for film in Film.query.all():
+        print(film)
+
     return 'Film was added'
 
 @app.route("/add_comment",methods=['POST'])
@@ -289,10 +307,17 @@ def films():
     if not session.get('username'):
         return redirect(url_for('home'))
     serche = request.args.get('search')
+    category = request.args.get('category')
+    if serche and category:
+        films = Film.query.filter(Film.title.contains(serche), Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
+        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
     if serche:
-        films = Film.query.filter(Film.title.contains(serche)).paginate(page=page, per_page=5)
-        return render_template('films.html', films=films, admin=session['admin'])
-    films = Film.query.paginate(page=page, per_page=5)
+        films = Film.query.filter(Film.title.contains(serche) ).paginate(page=page, per_page=8)
+        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+    if category:
+        films = Film.query.filter(Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
+        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+    films = Film.query.paginate(page=page, per_page=8)
     return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
 
 
@@ -313,7 +338,8 @@ def filmDetail(id):
     if not session.get('username'):
         return redirect(url_for('home'))
     film = Film.query.get_or_404(id)
-
+    for category in film.category:
+        print(category.name)
     return render_template('filmDetail.html', film=film)
 # it doesnt remove old iamge from the folder, i am too lazy to fix it
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -355,17 +381,20 @@ def edit_film(id):
             db.session.add(actor)
             db.session.commit()
         film.actor = actor
-        category =  Category.query.filter_by(name=request.form['category']).first()
-        if not category:
-            category = Category(name=request.form['category'])
-            db.session.add(category)
-            db.session.commit()
+        categoryList = request.form.getlist("category")
+        category = []
+        for cat in categoryList:
+            categoryQueried = Category.query.filter_by(name=cat).first()
+            if not categoryQueried:
+                categoryQueried = Category(name=cat)
+                db.session.add(categoryQueried)
+                db.session.commit()
+            category.append(categoryQueried)
         film.category = category
         db.session.commit()
         return redirect('/films')
     print(film.actor.name)
     print(film.director.name)
-    print(film.category.name)
     
     return render_template('edit_film.html', film=film)
 @app.route('/add_film', methods=['GET', 'POST'])
@@ -400,7 +429,7 @@ def add_film():
                 image.filename = f"{unique_str}_{filename}"
                 image.save(os.path.join(basedir, 'static/uploads', image.filename))
             else:
-                image.filename = 'untitled5.jpg'
+                image.filename = 'PlaceholderFilm.png'
             
             director = Director.query.filter_by(name=director_name).first()
             if not director:
@@ -418,7 +447,7 @@ def add_film():
                 db.session.add(actor)
                 db.session.commit()
             print(image.filename)
-            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=category, actor=actor, rating=data['rating'])
+            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=[category], actor=actor, rating=data['rating'])
             db.session.add(film)
             db.session.commit()
             print(film.image)
@@ -445,7 +474,7 @@ def add_film():
                 image.filename = f"{unique_str}_{filename}"
                 image.save(os.path.join(basedir, 'static/uploads', image.filename))
             else:
-                image.filename = 'untitled5.jpg'
+                image.filename = 'PlaceholderFilm.png'
             
             director = Director.query.filter_by(name=director_name).first()
             if not director:
@@ -469,6 +498,8 @@ def add_film():
 
 
             film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, actor=actor, category=categories, rating=rating)
+            db.session.add(film)
+            db.session.commit()
         return redirect('/films')
     return render_template('add_film.html')
 
@@ -561,7 +592,7 @@ def search():
     if serche:
     
         #i want to retur films as a json but first i need to query them and after that i need to convert them to json
-        films = Film.query.filter(Film.title.contains(serche)).all()
+        films = Film.query.filter(Film.title.contains(serche)).limit(10)
         films = [film.as_dict() for film in films]
         return jsonify(films)
     return 'No films found', 404

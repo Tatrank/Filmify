@@ -68,12 +68,14 @@
               for="catregory">
               Category
             </label>
-            <input name="category" id="category"
+            {% for category in film.category%}
+            <input name="category" id="category{{category.id}}" oninput="search2('{{category.id}}', event)"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              type="text" required="true" value="{{film.category.name}}" />
-            <div class="" id="showcategory">
+              type="text" required="true" value="{{category.name}}" />
+            <div class="" id="showcategory{{category.id}}">
 
             </div>
+            {% endfor %}
           </div>
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -91,7 +93,10 @@
                 for="rating">
                 Rating
               </label>
-              <input type="number" name="rating" id="rating" value={{film.rating}} />
+
+              <input name="rating" id="rating"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                type="number" required="true" value=0 />
 
             </div>
             <input type="hidden" name="csrf_token" value="{{csrf_token()}}" />
@@ -135,6 +140,29 @@
 
 {% block scripts %}
 <script>
-
+  function search2(id, event) {
+    let target = document.getElementById("showcategory" + id);
+    let value = event.target.value; // accessing the value through event.target
+    console.log(value);
+    if (value.length < 3) {
+      target.innerHTML = "";
+      return;
+    }
+    fetch(`/api/category?search=${value}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        target.innerHTML = "";
+        data.forEach((element) => {
+          let div = document.createElement("div");
+          div.innerHTML = element.name;
+          div.addEventListener("click", function () {
+            document.getElementById("category" + id).value = element.name;
+            target.innerHTML = "";
+          });
+          target.appendChild(div);
+        });
+      });
+  }
 </script>
 {% endblock %}

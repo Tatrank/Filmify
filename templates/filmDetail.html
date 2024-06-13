@@ -43,11 +43,12 @@
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">Genres</h2>
       <div class="flex flex-wrap gap-2">
-        <div
-          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
-          data-v0-t="badge">
-          {{film.category.name}}
-        </div>
+        {% for category in film.category %}
+        <a class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+          data-v0-t="badge" href="{{url_for('films', category=category.name)}}">
+          {{category.name}}
+        </a>
+        {% endfor %}
       </div>
     </div>
     <div class="space-y-2">
@@ -65,10 +66,10 @@
         <span class="text-gray-500 dark:text-gray-400">{{film.rating}}/100</span>
       </div>
     </div>
-    <div class="space-y-2">
+    <div class="space-y-2" id="trailer">
       <h2 class="text-2xl font-bold">Trailer</h2>
       <div class="aspect-video rounded-lg overflow-hidden">
-        <iframe class="w-full h-80" src="{{film.trailer}}" frameborder="0"
+        <iframe class="w-full h-80" src="{{film.trailer}}" frameborder="0" id="ytplayer"
           allow="accelerometer; autoplay w-full; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
@@ -102,7 +103,7 @@
     </div>
     {% if session["username"] %}
     <div class="space-y-2">
-      <h2 class="text-2xl font-bold">Add a Review</h2>
+      <h2 class="text-2xl font-bold">Add a comment</h2>
       <form class="grid gap-4" id="commentForm">
         <div class="space-y-2">
           <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -185,7 +186,13 @@
         // Handle network errors
       });
   };
-
+  let auth = "{{session['username']}}"
+  let videoPlayer = document.getElementById("ytplayer")
+  videoPlayer.onload = function () {
+    if (videoFrame.contentDocument && videoFrame.contentDocument.readyState === 'complete') {
+      console.log('Video loaded successfully');
+    }
+  }
 </script>
 
 {% endblock %}

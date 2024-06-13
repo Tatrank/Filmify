@@ -26,8 +26,10 @@ function getDynamic(name) {
             });
     });
 }
+
+
 getDynamic("director");
 getDynamic("actor");
-getDynamic("category"); t
+getDynamic("category");
 
 
