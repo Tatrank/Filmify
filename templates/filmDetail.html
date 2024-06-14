@@ -3,14 +3,8 @@ block content %}
 
 <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
   <div>
-    <img
-      src="{{ url_for('static', filename='uploads/' + film.image) }}"
-      alt="Movie Poster"
-      width="600"
-      height="900"
-      class="w-full h-[900px] object-cover rounded-lg"
-      style="aspect-ratio: 600 / 900; object-fit: cover"
-    />
+    <img src="{{ url_for('static', filename='uploads/' + film.image) }}" alt="Movie Poster" width="600" height="900"
+      class="w-full h-[900px] object-cover rounded-lg" style="aspect-ratio: 600 / 900; object-fit: cover" />
   </div>
   <div class="space-y-6">
     <div>
@@ -25,14 +19,9 @@ block content %}
       <h2 class="text-2xl font-bold">Cast</h2>
       <div class="grid grid-cols-2 gap-4">
         <div class="flex items-center space-x-4">
-          <span
-            class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
-          >
-            <img
-              class="aspect-square h-full w-full"
-              alt="Tim Robbins"
-              src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
-            />
+          <span class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12">
+            <img class="aspect-square h-full w-full" alt="Tim Robbins"
+              src="{{ url_for('static', filename='uploads/profilePic.jpg') }}" />
           </span>
           <div>
             <p class="font-medium">{{film.actor.name}}</p>
@@ -43,14 +32,9 @@ block content %}
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">Director</h2>
       <div class="flex items-center space-x-4">
-        <span
-          class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12"
-        >
-          <img
-            class="aspect-square h-full w-full"
-            alt="Frank Darabont"
-            src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
-          />
+        <span class="relative flex shrink-0 overflow-hidden rounded-full h-12 w-12">
+          <img class="aspect-square h-full w-full" alt="Frank Darabont"
+            src="{{ url_for('static', filename='uploads/profilePic.jpg') }}" />
         </span>
         <div>
           <p class="font-medium">{{film.director.name}}</p>
@@ -61,11 +45,8 @@ block content %}
       <h2 class="text-2xl font-bold">Genres</h2>
       <div class="flex flex-wrap gap-2">
         {% for category in film.category %}
-        <a
-          class="inline-flex w-fit hover:bg-gray-900 hover:text-white items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
-          data-v0-t="badge"
-          href="{{url_for('films', category=category.name)}}"
-        >
+        <a class="inline-flex w-fit hover:bg-gray-900 hover:text-white items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+          data-v0-t="badge" href="{{url_for('films', category=category.name)}}">
           {{category.name}}
         </a>
         {% endfor %}
@@ -75,47 +56,27 @@ block content %}
       <h2 class="text-2xl font-bold">Rating</h2>
       <div class="flex items-center space-x-2">
         <!-- SVG Stars -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500">
           <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+          </polygon>
         </svg>
         <!-- Repeat the SVG element for more stars -->
-        <span class="text-gray-500 dark:text-gray-400"
-          >{{film.rating}}/100</span
-        >
+        <span class="text-gray-500 dark:text-gray-400">{{film.rating}}/100</span>
       </div>
     </div>
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">User Rating</h2>
       <div class="flex items-center space-x-2">
         <!-- SVG Stars -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500">
           <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+          </polygon>
         </svg>
         <!-- Repeat the SVG element for more stars -->
         <span class="text-gray-500 dark:text-gray-400">{{average}}/100</span>
@@ -126,26 +87,15 @@ block content %}
       <h2 class="text-2xl font-bold">Your rating</h2>
       <div class="flex items-center space-x-2">
         <!-- SVG Stars -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="w-6 h-6 fill-yellow-500"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500">
           <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          ></polygon>
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+          </polygon>
         </svg>
         <!-- Repeat the SVG element for more stars -->
-        <span class="text-gray-500 dark:text-gray-400"
-          >{{userRating.rating}}/100</span
-        >
+        <span class="text-gray-500 dark:text-gray-400">{{userRating.rating}}/100</span>
       </div>
     </div>
     {% endif %} {% if session["username"]%}
@@ -160,15 +110,9 @@ block content %}
     <div class="space-y-2" id="trailer">
       <h2 class="text-2xl font-bold">Trailer</h2>
       <div class="aspect-video rounded-lg overflow-hidden">
-        <iframe
-          class="w-full h-80"
-          src="{{film.trailer}}"
-          frameborder="0"
-          id="ytplayer"
+        <iframe class="w-full h-80" src="{{film.trailer}}" frameborder="0" id="ytplayer"
           allow="accelerometer; autoplay w-full; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
     </div>
     <div class="space-y-2">
@@ -176,13 +120,8 @@ block content %}
       <div class="grid gap-4" id="comments">
         {% for comment in film.comment %}
         <div class="flex items-start gap-4">
-          <span
-            class="relative flex shrink-0 overflow-hidden rounded-full h-10 w-10"
-          >
-            <img
-              class="aspect-square h-full w-full"
-              src="{{ url_for('static', filename='uploads/profilePic.jpg') }}"
-            />
+          <span class="relative flex shrink-0 overflow-hidden rounded-full h-10 w-10">
+            <img class="aspect-square h-full w-full" src="{{ url_for('static', filename='uploads/profilePic.jpg') }}" />
           </span>
           <div class="flex-1 space-y-2">
             <div class="flex items-center justify-between">
@@ -190,11 +129,8 @@ block content %}
               <div class="text-gray-500 dark:text-gray-400 text-sm">
                 {% if session["username"] == comment.user.username or
                 session["username"] == "admin" %}
-                <div
-                  href="{{url_for('delete_comment', id=comment.id)}}"
-                  class="text-red-500 hover:text-red-700 cursor-pointer"
-                  onclick="deleteComment({{comment.id}})"
-                >
+                <div href="{{url_for('delete_comment', id=comment.id)}}"
+                  class="text-red-500 hover:text-red-700 cursor-pointer" onclick="deleteComment({{comment.id}})">
                   <i class="fa-solid fa-xmark"></i>
                 </div>
                 {% endif %}
@@ -211,24 +147,17 @@ block content %}
       <h2 class="text-2xl font-bold">Add a comment</h2>
       <form class="grid gap-4" id="commentForm">
         <div class="space-y-2">
-          <label
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            for="review"
-          >
+          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            for="review">
             Review
           </label>
           <textarea
             class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="text"
-            name="text"
-            placeholder="Write comment"
-            rows="4"
-          ></textarea>
+            id="text" name="text" placeholder="Write comment" rows="4"></textarea>
         </div>
         <button
           class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-black ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-white hover:bg-slate-700 h-10 px-4 py-2 w-full"
-          type="submit"
-        >
+          type="submit">
           Submit
         </button>
       </form>
@@ -245,6 +174,10 @@ block content %}
     const formData = new FormData();
     formData.append("rating", document.getElementById("ratingInput").value);
     console.log(document.getElementById("ratingInput").value);
+    if (document.getElementById("ratingInput").value > 100 || document.getElementById("ratingInput").value < 0) {
+      alert("Rating must be between 0 and 100");
+      return;
+    }
     formData.append("film_id", "{{ film.id }}");
     formData.append("csrf_token", "{{ csrf_token() }}");
 

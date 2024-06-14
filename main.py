@@ -254,38 +254,41 @@ def add_user():
     return 'User was added'
 @app.route('/database/add_film')
 def database_add_film():
-    categoryList = ["action", "horror", "adventure" , "comedy", "drama", "thriller", "crime", "fantasy", "sci-fi", "mystery", "animation", "family", "romance", "biography", "history", "war", "western", "musical", "sport", "music", "documentary", "short", "film-noir", "adult"]
-    #add bunch of normal names
-    actorList = [  "Tom Hanks", "Morgan Freeman", "Tim Robbins", "Andy Dufresne", "William Sadler", "Clancy Brown", "Gil Bellows", "James Whitmore", "Bob Gunton", "Frank Darabont", "Stephen King", "Roger Deakins", "Thomas Newman", "Richard Francis-Bruce", "Terence Marsh", "Linda R. Chen", "Niki Marvin", "Castle Rock Entertainment", "Columbia Pictures", "Warner Bros."]
-    directorList = ["Frank Darabont", "Stephen King", "Roger Deakins", "Thomas Newman", "Richard Francis-Bruce", "Terence Marsh", "Linda R. Chen", "Niki Marvin", "Castle Rock Entertainment", "Columbia Pictures", "Warner Bros."]
-    for actor in actorList:
-        if Actor.query.filter_by(name=actor).first():
-            continue
-        actor = Actor(name=actor)
-        db.session.add(actor)
-        db.session.commit()
-    for director in directorList:
-        if Director.query.filter_by(name=director).first():
-            continue
-        director = Director(name=director)
-        db.session.add(director)
-        db.session.commit()
-    categories = []
-    for category in categoryList:
-        if Category.query.filter_by(name=category).first():
-            categories.append(Category.query.filter_by(name=category).first())
-            continue
-        category = Category(name=category)
-        db.session.add(category)
-        db.session.commit()
-        categories.append(category)
+    csfdURLList = ["https://www.csfd.cz/film/254156-pocatek/prehled/","https://www.csfd.cz/film/1165648-bob-marley-one-love/prehled/", "https://www.csfd.cz/film/5-zhave-vystrely-2/prehled/" , "https://www.csfd.cz/film/224071-hory-maji-oci-2/prehled/", "https://www.csfd.cz/film/267435-velmistr/prehled/" ]
+    for url in csfdURLList:
+        data = scrapPokus(url)
+        title = data['title']
+        description = data['description']
+        release_year = data['release_year']
+        length = data['length']
+        trailer = 'https://www.youtube.com/watch?v=6hB3S9bIaco'
+        director_name = data['director']
+        category_name = data['category']
+        actor_name = data['actor']
+        image = 'PlaceholderFilm.png'
+        director = Director.query.filter_by(name=director_name).first()
+        if not director:
+            director = Director(name=director_name)
+            db.session.add(director)
+            db.session.commit()
+        categoryList = []
+        for category_name in data['category']:
+            category = Category.query.filter_by(name=category_name).first()
+            if not category:
+                    category = Category(name=category_name)
+                    db.session.add(category)
+                    db.session.commit()
+            categoryList.append(category)
+        
+        actor = Actor.query.filter_by(name=actor_name).first()
+        if not actor:
+            actor = Actor(name=actor_name)
+            db.session.add(actor)
+            db.session.commit()
 
-    film = Film(title='The Shawshank Redemption', description='Two imprisoned', release_year=1994, length=142, actorId=1, category=categories, directorId=1, trailer='https://www.youtube.com/watch?v=6hB3S9bIaco', image='PlaceholderFilm.png', rating=9.3)
-    db.session.add(film)
-    db.session.commit()
-
-    for film in Film.query.all():
-        print(film)
+        film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image, director=director, category=categoryList, actor=actor, rating=data['rating'])
+        db.session.add(film)
+        db.session.commit()
 
     return 'Film was added'
 
