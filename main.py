@@ -649,6 +649,38 @@ def search():
         return jsonify(films)
     return 'No films found', 404
 
+@app.route("/api/public/films", methods=['GET'])
+def filmsAPI():
+    page = request.args.get('page', 1, type=int)
+    serche = request.args.get('search')
+    category = request.args.get('category')
+    api_key = request.args.get('api_key')
+    if not api_key:
+        return 'You need to provide an api key', 403
+    user = User.query.filter_by(api_key=api_key).first()
+    if not user:
+        return 'Invalid api key', 403
+    if user.credits <= 0:
+        return 'You dont have enough credits', 403
+    user.credits -= 1
+    if serche and category:
+        films = Film.query.filter(Film.title.contains(serche), Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
+        films = [film.as_dict() for film in films.items]
+        return jsonify(films)
+    if serche:
+        films = Film.query.filter(Film.title.contains(serche)).paginate(page=page, per_page=8)
+        films = [film.as_dict() for film in films.items]
+        return jsonify(films)
+    if category:
+        films = Film.query.filter(Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
+        films = [film.as_dict() for film in films.items]
+        return jsonify(films)
+    films = Film.query.paginate(page=page, per_page=8)
+    films = [film.as_dict() for film in films.items]
+    return jsonify(films)
+
+
+
 
 @app.route("/userOverwiev/<int:id>", methods=['GET'])
 def userOverwiev(id):
