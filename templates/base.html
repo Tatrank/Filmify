@@ -87,6 +87,12 @@
             >
             {% endif %} {% if session["username"] %}
             <a class="hover:text-gray-400" href="{{ url_for('logout' ) }}">
+              Logout
+            </a>
+            <a
+              class="hover:text-gray-400"
+              href="{{ url_for('userOverwiev', id=session['user_id'] ) }}"
+            >
               {{ session["username"] }}
             </a>
             {% endif %}

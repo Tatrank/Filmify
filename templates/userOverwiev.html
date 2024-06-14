@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block title %} User Management {% endblock %} {%
+block content %}
+<div>
+  <h1 class="text-3xl font-bold">{{user.username}}</h1>
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    Credits {{user.credits}}
+  </div>
+  <div>API Key {{user.api_key}}</div>
+  <button id="change" class="  ">Change API key</button>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.getElementById("change").addEventListener("click", async () => {
+    const csrf_token = "{{ csrf_token() }}";
+    fetch(`{{ url_for('changeAPIKey', id=user.id) }}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrf_token,
+      },
+      body: JSON.stringify({}),
+    })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  });
+</script>
+{% endblock %}

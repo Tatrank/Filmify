@@ -97,6 +97,66 @@ block content %}
         >
       </div>
     </div>
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">User Rating</h2>
+      <div class="flex items-center space-x-2">
+        <!-- SVG Stars -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <!-- Repeat the SVG element for more stars -->
+        <span class="text-gray-500 dark:text-gray-400">{{average}}/100</span>
+      </div>
+    </div>
+    {% if userRating %}
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Your rating</h2>
+      <div class="flex items-center space-x-2">
+        <!-- SVG Stars -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 fill-yellow-500"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        <!-- Repeat the SVG element for more stars -->
+        <span class="text-gray-500 dark:text-gray-400"
+          >{{userRating.rating}}/100</span
+        >
+      </div>
+    </div>
+    {% endif %} {% if session["username"]%}
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">Change your rating</h2>
+      <form id="rating">
+        <input type="number" id="ratingInput" />
+        <button>Submit</button>
+      </form>
+    </div>
+    {% endif %}
     <div class="space-y-2" id="trailer">
       <h2 class="text-2xl font-bold">Trailer</h2>
       <div class="aspect-video rounded-lg overflow-hidden">
@@ -161,7 +221,7 @@ block content %}
             class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             id="text"
             name="text"
-            placeholder="Write your review"
+            placeholder="Write comment"
             rows="4"
           ></textarea>
         </div>
@@ -179,6 +239,34 @@ block content %}
 
 <script>
   let socket = io();
+
+  document.getElementById("rating").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("rating", document.getElementById("ratingInput").value);
+    console.log(document.getElementById("ratingInput").value);
+    formData.append("film_id", "{{ film.id }}");
+    formData.append("csrf_token", "{{ csrf_token() }}");
+
+    fetch('{{ url_for("add_rating") }}', {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token() }}",
+      },
+      body: formData,
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          console.error("Error:", response.statusText); // Handle errors
+        }
+      })
+      .catch((error) => {
+        console.error("Network error:", error); // Handle network errors
+      });
+  });
+
   document
     .getElementById("commentForm")
     .addEventListener("submit", function (e) {

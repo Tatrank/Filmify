@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from flask_socketio import SocketIO, emit
 import json
 import requests
+import uuid
 # Flask constructor takes the name of 
 # current module (__name__) as argument.
 app = Flask(__name__)
@@ -42,6 +43,7 @@ class Film(db.Model):
     image = db.Column(db.String(100), nullable=False, default='PlaceholderFilm.png')
     comment = db.relationship('Comment', backref='film', lazy=True)
     rating = db.Column(db.Float, nullable=True, default=0.0)
+    ratingUser = db.relationship('RatingUser', backref='film', lazy=True)
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
@@ -51,6 +53,11 @@ category_film = db.Table('category_film',
     db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True),
     db.Column('film_id', db.Integer, db.ForeignKey('film.id'), primary_key=True)
 )
+
+
+
+
+
 
 
 
@@ -68,6 +75,9 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     admin = db.Column(db.Boolean(), nullable=False, default=True )
     comment = db.relationship('Comment', backref='user', lazy=True)
+    ratingUser = db.relationship('RatingUser', backref='user', lazy=True)
+    credits = db.Column(db.Integer, nullable=False, default=1000)
+    api_key = db.Column(db.String(100), nullable=True, default=str(uuid.uuid4()))
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
@@ -91,6 +101,18 @@ class Director(db.Model):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
         return '<Director %r>' % self.name
+
+
+
+class RatingUser(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    rating = db.Column(db.Float, nullable=False)
+    filmId = db.Column(db.Integer, db.ForeignKey('film.id'))
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def __repr__(self):
+        return '<Rating %r>' % self.rating
 
 
 class Category(db.Model):
@@ -343,15 +365,31 @@ def delete_film(id):
     db.session.commit()
     return 'Film was deleted', 200
 
-
+@app.route("/add_rating", methods=['POST'])
+def add_rating():
+    film_id = request.form['film_id']
+    print(film_id)
+    rating = request.form['rating']
+    ratingExist = RatingUser.query.filter_by(filmId=film_id, userId=session['user_id']).first()
+    if ratingExist:
+        ratingExist.rating = rating
+        db.session.commit()
+        return "ok"
+    ratingExist = RatingUser(rating=rating, filmId=film_id, userId=session['user_id'])
+    db.session.add(ratingExist)
+    db.session.commit()
+    return "ok"
 
 @app.route('/film/<int:id>', methods=['GET'])
 def filmDetail(id):
     if not session.get('username'):
         return redirect(url_for('home'))
     film = Film.query.get_or_404(id)
-
-    return render_template('filmDetail.html', film=film)
+    average = db.session.query(func.avg(RatingUser.rating)).filter(RatingUser.filmId == id).scalar()
+    if not average:
+        average = 0
+    userRating = RatingUser.query.filter_by(filmId=id, userId=session['user_id']).first()
+    return render_template('filmDetail.html', film=film, average=average, userRating=userRating)
 # it doesnt remove old iamge from the folder, i am too lazy to fix it
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_film(id):
@@ -514,7 +552,7 @@ def add_film():
             film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, actor=actor, category=categories, rating=rating)
             db.session.add(film)
             db.session.commit()
-        return redirect()
+        return redirect(url_for('filmDetail', id=film.id))
     return render_template('add_film.html')
 
 
@@ -543,7 +581,7 @@ def signUp():
         user = User.query.filter_by(username=username).first()
         if user:
             return  render_template('signUp.html', error='User already exists')
-        new_user = User(username=username, password=bcrypt.generate_password_hash(password).decode('utf-8'))
+        new_user = User(username=username, password=bcrypt.generate_password_hash(password).decode('utf-8'), api_key=str(uuid.uuid4()))
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('home'))
@@ -611,6 +649,22 @@ def search():
         return jsonify(films)
     return 'No films found', 404
 
+
+@app.route("/userOverwiev/<int:id>", methods=['GET'])
+def userOverwiev(id):
+    user = User.query.get_or_404(id)
+    if not session.get('admin') and session['user_id'] != id:
+        return 'You are not authorized to see this page', 403
+    return render_template('userOverwiev.html', user=user)
+
+@app.route("/changeAPIKey/<int:id>", methods=['PUT'])
+def changeAPIKey(id):
+    if not session.get('admin') and session['user_id'] != id:
+        return 'You are not authorized to see this page', 403
+    user = User.query.get_or_404(id)
+    user.api_key = str(uuid.uuid4())
+    db.session.commit()
+    return 'API key was changed', 200
 # main driver function
 if __name__ == '__main__':
     # run() method of Flask class runs the application 
