@@ -110,7 +110,7 @@ class Comment(db.Model):
     text = db.Column(db.String(100), nullable=False)
     filmId = db.Column(db.Integer, db.ForeignKey('film.id'))
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
-    time = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     def __repr__(self):
@@ -191,10 +191,13 @@ url
         year = int(lentgh_year[1].strip())
         time =int( lentgh_year[2].split(' ')[1]     )   
         director = soup.find('div', class_='creators').find('a').text.strip()
-        category = soup.find('div', class_='genres').find('a').text.strip()
+        category = soup.find('div', class_='genres').find_all('a')
+
+        categories = [cat.text.strip() for cat in category]
+
         actor = soup.find('div', class_='creators').find_all('a')[4].text.strip()
- 
-        return {"title": title_element, "description": description_element, "release_year": year, "length": time, "director": director, "category": category, "actor": actor,"rating": rating_element}
+
+        return {"title": title_element, "description": description_element, "release_year": year, "length": time, "director": director, "category": categories, "actor": actor,"rating": rating_element}
 
 
 
@@ -264,13 +267,17 @@ def database_add_film():
 
     return 'Film was added'
 
-@app.route("/add_comment",methods=['POST'])
+@app.route("/add_comment", methods=['POST'])
 def add_comment():
     film_id = request.form['film_id']
     text = request.form['text']
     comment = Comment(text=text, filmId=film_id, userId=session['user_id'])
     db.session.add(comment)
     db.session.commit()
+    
+    user = User.query.filter_by(id=session['user_id']).first()
+    socketio.emit("addComment", [comment.as_dict(), user.as_dict()])
+    print("dfas")
     return "ok"
 
 @app.route("/delete_comment/<int:id>", methods=['DELETE'])
@@ -312,17 +319,18 @@ def films():
         return redirect(url_for('home'))
     serche = request.args.get('search')
     category = request.args.get('category')
+    categories = Category.query.all()
     if serche and category:
         films = Film.query.filter(Film.title.contains(serche), Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
-        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+        return render_template('films.html', categories=categories,  films=films, admin=session['admin'], number_of_pages=range(films.pages))
     if serche:
         films = Film.query.filter(Film.title.contains(serche) ).paginate(page=page, per_page=8)
-        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+        return render_template('films.html',categories=categories , films=films, admin=session['admin'], number_of_pages=range(films.pages))
     if category:
         films = Film.query.filter(Film.category.any(Category.name == category)).paginate(page=page, per_page=8)
-        return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+        return render_template('films.html', films=films, categories=categories , admin=session['admin'], number_of_pages=range(films.pages))
     films = Film.query.paginate(page=page, per_page=8)
-    return render_template('films.html', films=films, admin=session['admin'], number_of_pages=range(films.pages))
+    return render_template('films.html', films=films, categories=categories , admin=session['admin'], number_of_pages=range(films.pages))
 
 
 @app.route('/delete/<int:id>', methods=['DELETE'])
@@ -342,8 +350,7 @@ def filmDetail(id):
     if not session.get('username'):
         return redirect(url_for('home'))
     film = Film.query.get_or_404(id)
-    for category in film.category:
-        print(category.name)
+
     return render_template('filmDetail.html', film=film)
 # it doesnt remove old iamge from the folder, i am too lazy to fix it
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -397,8 +404,7 @@ def edit_film(id):
         film.category = category
         db.session.commit()
         return redirect('/films')
-    print(film.actor.name)
-    print(film.director.name)
+
     
     return render_template('edit_film.html', film=film)
 @app.route('/add_film', methods=['GET', 'POST'])
@@ -406,11 +412,11 @@ def add_film():
     if not session.get('admin'):
         return 'You are not authorized to add a new film', 403
     if request.method == 'POST':
-        print(request.form["csfdHidden"])
+
         #why it is string i dont know, but it is so i need to compare it with string 'true' not with boolean True 
         if request.form["csfdHidden"] == 'true':
             
-            print('csfdHidden')
+
 
             url = request.form["csfdUrl"]
             data = scrapPokus(url)
@@ -440,23 +446,27 @@ def add_film():
                 director = Director(name=director_name)
                 db.session.add(director)
                 db.session.commit()
-            category = Category.query.filter_by(name=category_name).first()
-            if not category:
-                category = Category(name=category_name)
-                db.session.add(category)
-                db.session.commit()
+            categoryList = []
+            for category_name in data['category']:
+                category = Category.query.filter_by(name=category_name).first()
+                if not category:
+                        category = Category(name=category_name)
+                        db.session.add(category)
+                        db.session.commit()
+                categoryList.append(category)
+            
             actor = Actor.query.filter_by(name=actor_name).first()
             if not actor:
                 actor = Actor(name=actor_name)
                 db.session.add(actor)
                 db.session.commit()
-            print(image.filename)
-            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=[category], actor=actor, rating=data['rating'])
+
+            film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, category=categoryList, actor=actor, rating=data['rating'])
             db.session.add(film)
             db.session.commit()
-            print(film.image)
+        
         else:
-            print(request.form.getlist("category"))
+
 
 
             title = request.form['title']
@@ -504,7 +514,7 @@ def add_film():
             film = Film(title=title, description=description, release_year=release_year, length=length, trailer=trailer, image=image.filename, director=director, actor=actor, category=categories, rating=rating)
             db.session.add(film)
             db.session.commit()
-        return redirect('/films')
+        return redirect()
     return render_template('add_film.html')
 
 
@@ -592,7 +602,7 @@ def directorSearch():
 @app.route("/search", methods=['GET'])
 def search():
     serche = request.args.get('search')
-    print(serche)
+
     if serche:
     
         #i want to retur films as a json but first i need to query them and after that i need to convert them to json

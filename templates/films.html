@@ -1,21 +1,56 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
+<div   class="w-64 mr-8 overflow-auto hidden md:inline absolute overflow-y-scroll h-1/2" data-id="23"><div class="sticky top-0 bg-gray-100 dark:bg-gray-900 py-2 px-4" data-id="24"><h3 class="text-lg font-semibold" data-id="25">Categories</h3></div><div class="space-y-2 py-4" data-id="26">
+  {% for category in categories %}
+  <a
+    href="{{ url_for('films', page=1, search=request.args.get('search', None), category=category.name) }}"
+    class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground  px-4 py-2 w-full justify-start hover:bg-gray-800 hover:text-white"
+    data-id="27"
+   
+  >
+    {{ category.name }}
+  </a>
+  {% endfor %}
+</div></div>
+{% if request.args.get('search', None) %}
+<div class="flex justify-center">
+  <h1 class="text-4xl font-semibold mb-8">Search results for "{{ request.args.get('search') }}"</h1>
+</div>
+{% endif %}
+{% if request.args.get('category', None) %}
+<div class="flex justify-center">
+  <h1 class="text-4xl font-semibold mb-8">Category: "{{ request.args.get('category') }}"</h1>
+</div>
+{% endif %}
+<div
+  class="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+>
   {% for film in films %} {% include 'film.html' %} {% endfor %}
 </div>
-{% if admin %}
+
+
 
 <div class="flex justify-center pt-6 gap-4">
   {% for page in number_of_pages %}
-  <a href="{{ url_for('films', page=page + 1) }}"
-    class="inline-flex justify-self-center items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-slate-700 h-10 px-4 py-2 w-10">
+  <a
+    href="{{ url_for('films', page=page + 1, search=request.args.get("search", None), category=request.args.get("category", None)) }}"
+    id="page-{{ page + 1 }}"
+    class="inline-flex justify-self-center items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-black text-white hover:bg-slate-700 h-10 px-4 py-2 w-10"
+  >
     {{ page + 1 }}
   </a>
   {% endfor %}
 </div>
-{% endif %} {% endblock %} {% block scripts %}
+ {% endblock %} {% block scripts %}
 
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let page = {{ request.args.get('page', 1)}};
+    console.log(page);
+    let pageElement = document.getElementById('page-' + page);
+    if (pageElement) {
+      pageElement.classList.add('bg-blue-700');
+    }
+  });
 </script>
 {% endblock %}
